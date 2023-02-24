@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime} from 'rxjs/operators';
 
 interface Member {
@@ -20,15 +20,17 @@ export class AppComponent implements OnInit{
   @Output() onEnter   : EventEmitter < string > = new EventEmitter();
   @Output() onDebounce: EventEmitter < string > = new EventEmitter();
   
-  public Members: Member []=[]
+  MembersData: Member []=[]
 
   debouncer: Subject< string > = new Subject();
   termino: string = '';
-  invlaidMember: boolean = false;
-
+  invalidMember: boolean = false;
+  showSuggestions: boolean = false;
+  accountSuggested: Member[]=[]
+  Members: any []= []
   
   ngOnInit() {
-    this.Members = [      { id: 1, Name: 'Steve Roggers', Email: 'AssOfAmerica@gmail.com', 
+    this.MembersData = [      { id: 1, Name: 'Steve Roggers', Email: 'AssOfAmerica@gmail.com', 
                           imgProfile: 'https://i.pinimg.com/736x/ba/32/c3/ba32c3707b4625af137ee5892c10a36f.jpg'},
                           { id: 2, Name: 'Antonio Stark', Email: 'coolguyWsexAppeal@gmail.com', 
                           imgProfile: 'https://los40es00.epimg.net/los40/imagenes/2021/07/01/bigbang/1625165791_416626_1625166043_noticia_normal_amp.jpg'},
@@ -68,16 +70,10 @@ teclaPresionada( event: any ){
   
 }
 
-AddMemberAccount( termino: any ) {
-  this.invlaidMember = false;
-  this.termino = termino;
-    this.Members.filter(( Member ) =>  );
-    console.log(this.Members);
-    
-  
-  
+AddMember(termino: any) {
+  const MemberBuscado = this.MembersData.find((Member) => Member.Name === termino );
+  if (MemberBuscado) {
+    this.Members.push(MemberBuscado);
+    } else(this.invalidMember = true);
+  }
 }
-
-
-}
-

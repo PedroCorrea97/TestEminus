@@ -2,25 +2,32 @@
   <input aria-describedby="emailHelp" maxlength="80" type="text" placeholder="MARK-V111">
 </div>
 <br>
-<div>
-  <form (ngSubmit)="buscar()" autocomplete="off">
-    <input type="Text"
-           name="Termino"
-           class="form-control"
-           [(ngModel)]="termino"
-           (input)="teclaPresionada( $event )"
-           placeholder="Cuenta UV"/>
-  </form>
+<div class="row">
+  <div class="col">
+    <form (ngSubmit)="buscar()" autocomplete="off">
+      <input type="Text" name="Termino" class="form-control"
+             [(ngModel)]="termino" (input)="teclaPresionada( $event )"
+             placeholder="Cuenta UV"/>
+    </form>
+  </div>
 </div>
-<button (click)="AddMemberAccount(termino)" >
+<div  *ngIf="invalidMember"
+      class="alert alert-danger">
+    No se encontro la cuenta {{termino}}
+</div>
+<button (click)="AddMember(termino)" >
   Agregar
 </button>
 <div *ngFor="let Member of Members" class="d-flex justify-content-between">
   <span class="d-flex">
     <img  src="{{Member.imgProfile}}" alt="" class="img-thumbnail g-bg-black" width="100" >
-    <div>
-      Nombre: {{Member.Name}} <br>
-      Correo: {{Member.Email}}
+    <div class="ms-3">
+      <strong>
+        Nombre:
+      </strong> {{Member.Name}} <br>
+      <strong>
+        Correo:
+      </strong>{{Member.Email}}
     </div>
   </span>
   <button>
