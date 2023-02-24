@@ -17,8 +17,8 @@ interface Member {
 
 export class AppComponent implements OnInit{
 
-  @Output() onEnter   : EventEmitter < string > = new EventEmitter();
-  @Output() onDebounce: EventEmitter < string > = new EventEmitter();
+  @Output() onEnter   : EventEmitter < any > = new EventEmitter();
+  @Output() onDebounce: EventEmitter < any > = new EventEmitter();
   
   MembersData: Member []=[]
 
@@ -26,9 +26,9 @@ export class AppComponent implements OnInit{
   termino: string = '';
   invalidMember: boolean = false;
   showSuggestions: boolean = false;
-  accountSuggested: Member[]=[]
-  Members: any []= []
-  
+  accountSuggested: any [] = []
+  Members: any [] = []
+
   ngOnInit() {
     this.MembersData = [      { id: 1, Name: 'Steve Roggers', Email: 'AssOfAmerica@gmail.com', 
                           imgProfile: 'https://i.pinimg.com/736x/ba/32/c3/ba32c3707b4625af137ee5892c10a36f.jpg'},
@@ -58,22 +58,41 @@ export class AppComponent implements OnInit{
     });
   }
 
-buscar () {
+Search () {
   this.onEnter.emit( this.termino );
   console.log(this.termino);
   
-}
+  }
 
 teclaPresionada( event: any ){
   this.debouncer.next ( this.termino );
   console.log(this.termino);
   
-}
+  }
 
 AddMember(termino: any) {
-  const MemberBuscado = this.MembersData.find((Member) => Member.Name === termino );
-  if (MemberBuscado) {
-    this.Members.push(MemberBuscado);
-    } else(this.invalidMember = true);
+  this.invalidMember = false;
+  this.termino = termino;
+  const SearchMember = this.MembersData.find((Member) => Member.Name === termino );
+  if (SearchMember) {
+    this.Members.push(SearchMember);
+    } 
+    else
+      (this.invalidMember = true,
+      this.Members = [])
+  }
+
+  Seggestions( termino: any ){
+    this.invalidMember = false;
+    this.termino = termino;
+    this.showSuggestions = true;
+    const SearchMemberS = this.MembersData.filter((Member) => Member.Name === termino);
+    if (SearchMemberS){
+      this.accountSuggested.push(SearchMemberS)
+    }
+    }
+
+  SearchSuggested( termino: any ) {
+    this.AddMember( termino );
   }
 }

@@ -1,36 +1,52 @@
 <div>
-  <input aria-describedby="emailHelp" maxlength="80" type="text" placeholder="MARK-V111">
-</div>
-<br>
-<div class="row">
-  <div class="col">
-    <form (ngSubmit)="buscar()" autocomplete="off">
-      <input type="Text" name="Termino" class="form-control"
-             [(ngModel)]="termino" (input)="teclaPresionada( $event )"
-             placeholder="Cuenta UV"/>
-    </form>
+  <div>
+    <input aria-describedby="emailHelp" maxlength="80" type="text" placeholder="MARK-V111">
   </div>
-</div>
-<div  *ngIf="invalidMember"
-      class="alert alert-danger">
-    No se encontro la cuenta {{termino}}
-</div>
-<button (click)="AddMember(termino)" >
-  Agregar
-</button>
-<div *ngFor="let Member of Members" class="d-flex justify-content-between">
-  <span class="d-flex">
-    <img  src="{{Member.imgProfile}}" alt="" class="img-thumbnail g-bg-black" width="100" >
-    <div class="ms-3">
-      <strong>
-        Nombre:
-      </strong> {{Member.Name}} <br>
-      <strong>
-        Correo:
-      </strong>{{Member.Email}}
-    </div>
-  </span>
-  <button>
-    <i class="fa-regular fa-circle-xmark text-danger" style="cursor: pointer"></i>
+  <br>
+  <div class="row">
+    <div class="col">
+      <form (ngSubmit)="Search()" autocomplete="off">
+        <input type="Text" name="Termino" class="form-control"
+               [(ngModel)]="termino" (input)="teclaPresionada( $event )"
+               (onEnter)="AddMember( $event )" (onDebounce)="Seggestions( $event )"
+               placeholder="Cuenta UV"/>
+      </form>
+    </div>  
+  </div>
+  <ul *ngIf="showSuggestions"
+        class="list-group">
+        <li *ngFor="let Member of accountSuggested"
+            class="list-group-item list-group-item-action">
+        </li>
+
+        <li class="list-group-item list-group-item-action"
+            (click)="SearchSuggested( termino ) ">
+            <a class="nav-link">
+                Buscar "{{ termino}}"
+            </a>
+        </li>
+    </ul>
+  <div  *ngIf="invalidMember"
+        class="alert alert-danger">
+      No se encontro la cuenta {{termino}}
+  </div>
+  <button (click)="AddMember(termino)" >
+    Agregar
   </button>
+  <div *ngFor="let Member of Members" class="d-flex justify-content-between">
+    <span class="d-flex">
+      <img  src="{{Member.imgProfile}}" alt="" class="img-thumbnail g-bg-black" width="100" >
+      <div class="ms-3">
+        <strong>
+          Nombre:
+        </strong> {{Member.Name}} <br>
+        <strong>
+          Correo:
+        </strong>{{Member.Email}}
+      </div>
+    </span>
+    <button>
+      <i class="fa-regular fa-circle-xmark text-danger" style="cursor: pointer"></i>
+    </button>
+  </div>
 </div>
