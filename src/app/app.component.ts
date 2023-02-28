@@ -1,32 +1,34 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output,Input, OnInit } from '@angular/core';
 import { debounceTime} from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
-import { ShareResourceService } from './services/ShareResourceService';
-
+import { MService } from './services/ResourceM.service';
+import { Country } from './member.interface';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styles: [`
+  li{
+    cursor: pointer;
+  }
+`
+]
 })
 
 export class AppComponent implements OnInit{
 
-  constructor (private ShareResourceService: ShareResourceService) {
+  @Output() onEnter   : EventEmitter < string > = new EventEmitter();
+  @Output() onDebounce: EventEmitter < string > = new EventEmitter();
+	debouncer: Subject< string > = new Subject();
 
-  }
-
-  @Output() onEnter   : EventEmitter < any > = new EventEmitter();
-  @Output() onDebounce: EventEmitter < any > = new EventEmitter();
-
-
-  debouncer: Subject< string > = new Subject();
   textUser: string = '';
   invalidMember: boolean = false;
+  @Input () paises: Country[] = [];
+
+  membersn: Country[] = [];
+  membersSuggested: Country[] = [];
   showSuggestions: boolean = false;
-  accountSuggested: any [] = []
-  Members: any [] = []
 
   ngOnInit() {
     this.debouncer
@@ -36,48 +38,54 @@ export class AppComponent implements OnInit{
     });
   }
 
-Search () {
-  this.onEnter.emit( this.textUser );
-  console.log(this.textUser);
-  
+  search() {
+    this.onEnter.emit( this.textUser );
+    console.log(this.textUser);
+    
   }
 
-teclaPresionada( event: any ){
-  this.debouncer.next ( this.textUser );
-  console.log(this.textUser);
-  
+  keyPressed( event: any ){
+    this.debouncer.next ( this.textUser );
+    console.log(this.textUser);
+    
+    
+  }
+  constructor ( private MService: MService ) {}
+
+  searchM( textUser: any ) {
+
+    this.invalidMember = false;
+    this.textUser = textUser;
+
+    this.MService.buscarPais( textUser )
+      .subscribe({
+        next: (paises) => {
+        console.log(paises);
+        this.membersn = paises;
+
+      },
+      error: (err) => {
+        this.invalidMember = true;
+        this.membersn = [];
+      }
+      });
+    
   }
 
-AddMember( textUser: string ) {
-
-  this.invalidMember = false;
-  this.textUser = textUser;
-  
-}
-
-  Seggestions( textUser: any ){
+  suggestions( textUser: any) {
     this.invalidMember = false;
     this.textUser = textUser;
     this.showSuggestions = true;
-    const SearchMemberS = this.MembersData.filter((Member) => Member.Name === termino);
-    if (SearchMemberS){
-      this.accountSuggested.push(SearchMemberS)
-    }
-    }
 
-  SearchSuggested( termino: any ) {
-    this.AddMember( termino );
+    this.MService.buscarPais ( textUser )
+      .subscribe({ next: (paises) => {this.membersSuggested = paises.splice(0,3)},
+                   error: (err) => {this.membersSuggested = []}} );
   }
-}
 
-// AddMember(termino: any) {
-//   this.invalidMember = false;
-//   this.termino = termino;
-//   const SearchMember = this.MembersData.find((Member) => Member.Name === termino );
-//   if (SearchMember) {
-//     this.Members.push(SearchMember);
-//     } 
-//     else
-//       (this.invalidMember = true,
-//       this.Members = [])
-//   }
+  searchSuggested ( textUser:string ) {
+    this.searchM( textUser );
+  }
+  // DeleteMember(member:any){
+	// 	this.members.splice(this.members.indexOf(member),1)
+	// }
+}

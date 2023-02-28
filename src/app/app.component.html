@@ -1,52 +1,28 @@
 <div>
-  <div>
-    <input aria-describedby="emailHelp" maxlength="80" type="text" placeholder="MARK-V111">
-  </div>
-  <br>
+  <h2>MARK-V!!</h2>
+  <hr>
   <div class="row">
     <div class="col">
-      <form (ngSubmit)="Search()" autocomplete="off">
-        <input type="Text" name="Termino" class="form-control"
-               [(ngModel)]="termino" (input)="teclaPresionada( $event )"
-               (onEnter)="AddMember( $event )" (onDebounce)="Seggestions( $event )"
-               placeholder="Cuenta UV"/>
+      <form (ngSubmit)="search()" autocomplete="off">
+        <input type="text" name="TextUser" class="form-control" [(ngModel)]="textUser"
+               (input)="keyPressed( $event )" (onEnter)="searchM( $event )" (onDebounce)="suggestions( $event )">
       </form>
-    </div>  
+    </div>
   </div>
-  <ul *ngIf="showSuggestions"
+  <ul *ngIf="showSuggestions === true"
         class="list-group">
-        <li *ngFor="let Member of accountSuggested"
+        <li *ngFor="let pais of membersSuggested"
             class="list-group-item list-group-item-action">
+            <a class="nav-link">
+                {{ pais.name.common }}
+            </a>
         </li>
 
         <li class="list-group-item list-group-item-action"
-            (click)="SearchSuggested( termino ) ">
+            (click)="searchSuggested( textUser ) ">
             <a class="nav-link">
-                Buscar "{{ termino}}"
+                Buscar "{{ textUser}}"
             </a>
         </li>
     </ul>
-  <div  *ngIf="invalidMember"
-        class="alert alert-danger">
-      No se encontro la cuenta {{termino}}
-  </div>
-  <button (click)="AddMember(termino)" >
-    Agregar
-  </button>
-  <div *ngFor="let Member of Members" class="d-flex justify-content-between">
-    <span class="d-flex">
-      <img  src="{{Member.imgProfile}}" alt="" class="img-thumbnail g-bg-black" width="100" >
-      <div class="ms-3">
-        <strong>
-          Nombre:
-        </strong> {{Member.Name}} <br>
-        <strong>
-          Correo:
-        </strong>{{Member.Email}}
-      </div>
-    </span>
-    <button>
-      <i class="fa-regular fa-circle-xmark text-danger" style="cursor: pointer"></i>
-    </button>
-  </div>
 </div>
