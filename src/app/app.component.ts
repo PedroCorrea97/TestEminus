@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { MemberService } from './services/Member.service';
 import { Member } from './member.interface';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit{
   textUser: string = '';
   members: Member[] = [];
   membersSuggested: Member [] = [];
+  memberSelected: Member [] = [];
   invalidMember: boolean = false;
   theresMembers: boolean = false;
   showSuggestions: boolean = false;
@@ -43,7 +45,6 @@ export class AppComponent implements OnInit{
       .subscribe({
         next: (members) =>{
         console.log(members);
-        this.membersSuggested = members
         this.membersSuggested = members.splice(0,4)
       },
     });
@@ -55,9 +56,11 @@ export class AppComponent implements OnInit{
     this.textUser = textUser;
     this.MemberService.searhcMember( textUser )
       .subscribe({
-        next: (members) => {
-        console.log(members);
-        this.members = members.splice(0,1);
+        next: (Members) => {
+        console.log(Members);
+        this.members.push(Members.splice(0,1));
+        console.log(this.members);
+        
         this.theresMembers = true;
       },
       error: (err) => {
