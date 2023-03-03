@@ -24,28 +24,36 @@ export class AppComponent implements OnInit{
   invalidMember: boolean = false;
   theresMembers: boolean = false;
   showSuggestions: boolean = false;
-  @Output() onDebounce: EventEmitter < string > = new EventEmitter();
   debouncer: Subject< string > = new Subject();
 
   constructor ( private MemberService: MemberService ) { }
 
   ngOnInit() {
     this.debouncer
-    .pipe( debounceTime(300) )
+    .pipe( debounceTime (300) )
     .subscribe( valor => {
-      this.onDebounce.emit( valor )
+      console.log(valor);
+      
     });
   }
-  keyPressed( event: any ){
-    console.log(this.textUser);
-    this.debouncer.next ( this.textUser );
+  suggestions( textUser: string ){
+    this.debouncer.next ( textUser );
+    this.invalidMember = false;
+    this.MemberService.searhcMember(textUser)
+      .subscribe({
+        next: (members) =>{
+        console.log(members);
+        this.membersSuggested = members
+        this.membersSuggested = members.splice(0,4)
+      },
+    });
   }
 
   searchMember(textUser: string) {
     console.log(this.textUser);
     this.invalidMember = false;
     this.textUser = textUser;
-    this.MemberService.searhcMember( this.textUser )
+    this.MemberService.searhcMember( textUser )
       .subscribe({
         next: (members) => {
         console.log(members);

@@ -1,51 +1,53 @@
 <div>
   <h2>MARK-V!!</h2>
   <hr>
-  <div class="row">
-    <div class="col">
-      <div>
-        <strong>
+  <div class="col">
+    <div>
+      <strong>
         Buscar miembro para compartir recurso
-        </strong>
-      </div>
-      <div class="row">
-        <div class="col">
-          <form (ngSubmit)="searchMember(textUser)" autocomplete="off"
-                class="Newform">
-            <mat-form-field class="Nwfull-width">
-              <mat-label>Ingresa CuentaUV</mat-label>
-              <input type="text" 
-                     name="TextUser"
-                     [(ngModel)]="textUser"
-                     (input)="keyPressed( $event )"
-                     matInput placeholder="@zS16013756 ">
-            </mat-form-field>
-          </form> 
-        </div>
-      </div>
-      
+      </strong>
     </div>
-  </div>
-  <br>
-  <div *ngIf="invalidMember" class="alert alert-danger">
-    EL miembro ingresado no Existe
-  </div>
-  <div *ngIf="theresMembers === true">
-    <strong>
-      Miembros Seleccionados
-      <hr>
-    </strong>
-    <mat-card class="MemberCard">
-      <mat-card-header *ngFor="let member of members" class="mb-3">
-        <img mat-card-sm-image class="ImgMember" [src]="member.flags.png">
-        <mat-card-title-group>
+
+    <div class="row">
+      <div class="col">
+        <form autocomplete="off" class="Newform">
+          <mat-form-field class="Nwfull-width">
+            <mat-label>Ingresa CuentaUV</mat-label>
+            <input type="text" name="TextUser" [(ngModel)]="textUser"
+                   matInput placeholder="@zS16013756"
+                   (ngSubmit)="searchMember(textUser)" (input)="suggestions( textUser)" >
+          </mat-form-field>
+        </form>
+        <mat-selection-list>
+          <mat-list-option *ngFor="let member of membersSuggested">
+            {{member.name.common}}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </div>
+
+    <hr>
+    <br>
+
+    <div *ngIf="invalidMember" class="alert alert-danger">
+      La cuenta: {{textUser}} no existe
+    </div>
+    <div *ngIf="theresMembers === true">
+      <strong>
+        Miembros Seleccionados
+        <hr>
+      </strong>
+      <mat-card class="MemberCard">
+        <mat-card-header *ngFor="let member of members" class="mb-3">
+          <img mat-card-sm-image class="ImgMember" [src]="member.flags.png">
+          <mat-card-title-group>
             <mat-card-title class="ms-3 mt-3">
-                <strong>Nombre: </strong>{{member.name.common}}
-                <mat-card-subtitle>
-                  <strong>Correo: </strong>{{member.population | number}}
-                </mat-card-subtitle>
+              <strong>Nombre: </strong>{{member.name.common}}
+              <mat-card-subtitle>
+                <strong>Correo: </strong>{{member.population | number}}
+              </mat-card-subtitle>
             </mat-card-title>
-        </mat-card-title-group>
-      </mat-card-header>
-    </mat-card>
-  </div>
+          </mat-card-title-group>
+        </mat-card-header>
+      </mat-card>
+    </div>
